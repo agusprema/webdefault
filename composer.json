@@ -1,10 +1,12 @@
 {
-    "name": "laravel/laravel",
+    "name": "agusprema/ruby-kit",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "The Kit Laravel Framework adn Filament.",
     "keywords": [
         "framework",
-        "laravel"
+        "laravel",
+        "kit",
+        "filament"
     ],
     "license": "MIT",
     "require": {

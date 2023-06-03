@@ -1,66 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FilamentExtendedStartedKit
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+FilamentExtendedStarterKit is a [Filament](https://filamentphp.com/) distribution with lots 
+of basic utilities and goodies pre-installed.
 
-## About Laravel
+## New Installation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```bash
+composer create-project agusprema/webdefault
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Install dependencies
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+composer update
+```
 
-## Learning Laravel
+Run migrations
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+php artisan migrate
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Create the first/admin user:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+php artisan make:filament-user
+```
 
-## Laravel Sponsors
+Init FilamentShield
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```
+php artisan shield:install
+```
 
-### Premium Partners
+Run the artisan command to run scheduled tasks
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+```
+php artisan schedule:run
+```
 
-## Contributing
+For the FilamentShield install, answer "yes" to all questions it asks.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+In theory, that should be it. You can now go to /admin on your site and you should see the filament 
+login screen. Log in with the user you created in step #4 above. 
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Installed Plugins
 
-## Security Vulnerabilities
+- [User](https://github.com/3x1io/filament-user)
+- [Curator](https://github.com/awcodes/filament-curator)
+- [Exceptions](https://github.com/bezhansalleh/filament-exceptions)
+- [Shild](https://github.com/bezhansalleh/filament-shield)
+- [JobsMonitor](https://github.com/croustibat/filament-jobs-monitor)
+- [FilamentSocialite](https://github.com/filament-socialite)
+- [FilamentLogManager](https://github.com/filipfonal/filament-log-manager)
+- [FilamentDatabaseSchedule](https://github.com/husam-tariq/filament-database-schedule)
+- [Settings](https://filamentphp.com/filament-dynamic-settings-page)
+- [Breezy](https://filamentphp.com/plugins/breezy)
+- [LanguageSwitch](https://github.com/kenepa/translation-manager)
+- [FilamentFontawezome](https://github.com/owenvoke/blade-fontawesome)
+- [SpatieBackups](https://github.com/shuvroroy/filament-spatie-laravel-backup)
+- [SpatieHealth](https://filamentphp.com/plugins/spatie-health)
+- [ThemeColorSwitcher](https://filamentphp.com/plugins/theme-color-switcher)
+- [Logger](https://github.com/z3d0x/filament-logger)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+All relevant migrations, views and config files have been published to the main Laravel 
+directory tree to the locations where you would expect them. If a package (such as, for 
+exmaple, the Spatie packages) is based upon another package, the base package 
+migrations and config files have been published as well. 
 
-## License
+Some of the above packages are self-explanatory (ie: you'll see them in the admin GUI)
+while others are development components which require some knowledge of the component 
+for it to be used. Take a look a the component pages, some have docs on the component 
+page, others on their github repo (linked from the component page). 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Admin Menu
+
+In order to achieve better menu item grouping, the admin menu is generated by the 
+App\Providers\FilamentServiceProvider class. You can disable the use of this 
+functionality (which will enable the default Filament menu generation) by 
+setting the *useCustomMenuGenerator* config option to *false* in the 
+/config/filament-extended-starter-kit.php config file.
+
+## HealthCheck
+
+The health checks are also defined and configued in the 
+App\Providers\FilamentServiceProvider class. The only variable which might 
+require tuning is the "nCpuCores" variable which is used to configure 
+CPU load and needs to know the number of CPU cores on you system in order 
+to make this calculation correct. 

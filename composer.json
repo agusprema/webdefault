@@ -18,7 +18,6 @@
         "croustibat/filament-jobs-monitor": "^1.0",
         "dutchcodingcompany/filament-socialite": "^0.2.5",
         "filament/filament": "^2.0",
-        "filament/spatie-laravel-settings-plugin": "^2.0",
         "filipfonal/filament-log-manager": "^1.2",
         "guzzlehttp/guzzle": "^7.2",
         "husam-tariq/filament-database-schedule": "^1.0",

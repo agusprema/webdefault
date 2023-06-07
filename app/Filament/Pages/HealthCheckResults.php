@@ -33,7 +33,7 @@ class HealthCheckResults extends Page
 
     protected static function getNavigationGroup(): ?string
     {
-        return __('filament-spatie-health::health.pages.health_check_results.navigation.group');
+        return config('filament.navigation_group.monitoring');
     }
 
     protected static function getNavigationLabel(): string

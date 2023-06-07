@@ -6,7 +6,7 @@ use App\Models\User;
 use ShuvroRoy\FilamentSpatieLaravelBackup\Models\BackupDestination;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class BackupPolicy
+class BackupsPolicy
 {
     use HandlesAuthorization;
 

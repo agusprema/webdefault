@@ -8,7 +8,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'nav.group' => 'Settings',
+    'nav.group' => config('filament.navigation_group.monitoring'),
     'nav.log.label' => 'Activity Log',
     'nav.log.icon' => 'heroicon-o-clipboard-list',
     'resource.label.log' => 'Activity log',

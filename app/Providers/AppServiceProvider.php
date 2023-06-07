@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use io3x1\FilamentSitemap\Pages\SiteSettings as BaseSiteSettings;
-use App\Filament\Pages\SiteSettings;
 use Illuminate\Support\Facades\Gate;
 use Awcodes\Curator\Facades\Curator;
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,9 +23,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->bind(BaseSiteSettings::class, SiteSettings::class);
         Gate::define('use-translation-manager', function ($user) {
             return $user->can('view_QuickTranslate') ? true : null;
+        });
+
+        Filament::serving(function () {
+            // Using Vite
+            Filament::registerViteTheme('resources/css/app.css');
         });
     }
 }

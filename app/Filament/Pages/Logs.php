@@ -126,6 +126,6 @@ class Logs extends Page
 
     protected static function getNavigationGroup(): ?string
     {
-        return config('filament-log-manager.navigation_group') ? __('filament-log-manager::translations.navigation_group') : null;
+        return config('filament-log-manager.navigation_group') ? config('filament.navigation_group.monitoring') : null;
     }
 }

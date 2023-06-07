@@ -24,7 +24,7 @@ class Backups extends Page
 
     protected static function getNavigationGroup(): ?string
     {
-        return __('filament-spatie-backup::backup.pages.backups.navigation.group');
+        return config('filament.navigation_group.maintenance');
     }
 
     protected static function getNavigationLabel(): string

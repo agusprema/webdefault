@@ -93,6 +93,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Navigation Group
+    |--------------------------------------------------------------------------
+    |
+    | This is the group navigation that Filament will automatically
+    | register navigation group. You may also register navigation group here.
+    |
+    */
+
+    'navigation_group' => [
+        'maintenance' => 'Maintenance',
+        'monitoring' => 'Monitoring and Logs',
+        'settings' => 'Settings and Configuration',
+        'user' => 'User Management',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Pages
     |--------------------------------------------------------------------------
     |

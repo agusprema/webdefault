@@ -4,7 +4,7 @@ return [
     'title' => 'Settings',
     'navigation' => [
         'label' => 'Settings',
-        'group' => 'Settings',
+        'group' => config('filament.navigation_group.settings'),
         'sort' => '1',
         'icon' => 'heroicon-o-cog',
         'folder' => 'site'

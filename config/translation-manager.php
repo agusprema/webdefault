@@ -49,6 +49,6 @@ return [
     |
     */
 
-    'navigation_group' => 'Settings',
+    'navigation_group' => config('filament.navigation_group.settings'),
 
 ];

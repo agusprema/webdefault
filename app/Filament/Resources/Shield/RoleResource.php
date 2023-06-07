@@ -204,7 +204,7 @@ class RoleResource extends Resource implements HasShieldPermissions
     protected static function getNavigationGroup(): ?string
     {
         return Utils::isResourceNavigationGroupEnabled()
-            ? __('filament-shield::filament-shield.nav.group')
+            ? config('filament.navigation_group.user')
             : '';
     }
 

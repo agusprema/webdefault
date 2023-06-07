@@ -11,7 +11,7 @@ return [
     /*
      * The Group name of the resource.
      */
-    "group" => "Settings",
+    "group" => config('filament.navigation_group.user'),
 
     /*
      * User Filament Impersonate

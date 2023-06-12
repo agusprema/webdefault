@@ -37,6 +37,11 @@ return [
     'resource.label.role' => 'Role',
     'resource.label.roles' => 'Roles',
 
+    'nav.permission.label' => 'Permissions',
+    'nav.permission.icon' => 'heroicon-o-shield-exclamation',
+    'resource.label.permission' => 'Permission',
+    'resource.label.permissions' => 'Permissions',
+
     /*
     |--------------------------------------------------------------------------
     | Section & Tabs
@@ -48,6 +53,7 @@ return [
     'widgets' => 'Widgets',
     'pages' => 'Pages',
     'custom' => 'Custom Permissions',
+    'prefix' => 'Prefix',
 
     /*
     |--------------------------------------------------------------------------

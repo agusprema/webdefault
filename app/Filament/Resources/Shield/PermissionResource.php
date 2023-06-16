@@ -3,20 +3,15 @@
 namespace App\Filament\Resources\Shield;
 
 use App\Filament\Resources\Shield\PermissionResource\Pages;
-use App\Filament\Resources\Shield\PermissionResource\RelationManagers;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Illuminate\Support\Str;
-use Filament\Tables\Filters\Filter;
 use Closure;
-use Spatie\Permission\Models\Permission;
 
 class PermissionResource extends Resource implements HasShieldPermissions
 {

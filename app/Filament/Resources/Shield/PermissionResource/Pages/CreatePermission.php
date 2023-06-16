@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Shield\PermissionResource\Pages;
 
 use App\Filament\Resources\Shield\PermissionResource;
-use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 

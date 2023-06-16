@@ -56,6 +56,15 @@ class PermissionResource extends Resource implements HasShieldPermissions
                                     ->helperText(__('filament-shield::filament-shield.field.select_all.message'))
                                     ->reactive()
                                     ->afterStateUpdated(function (Closure $set, $state) {
+
+                                        collect(config('filament-shield.permission_prefixes.resource'))->each(function ($prefix) use ($set, $state) {
+                                            $set('prefix.' . $prefix, $state);
+                                        });
+
+                                        if (!$state) {
+                                            $set('select_all', false);
+                                        }
+
                                         static::refreshEntitiesStatesViaSelectAll($set, $state);
                                     })
                                     ->dehydrated(fn ($state): bool => $state),
@@ -69,15 +78,22 @@ class PermissionResource extends Resource implements HasShieldPermissions
                         Forms\Components\Tabs\Tab::make(__('filament-shield::filament-shield.prefix'))
                             ->reactive()
                             ->schema([
-                                Forms\Components\Grid::make([
-                                    'sm' => 3,
-                                    'lg' => 4,
-                                ])
-                                    ->schema(static::getPrefixPermission())
-                                    ->columns([
-                                        'sm' => 2,
-                                        'lg' => 3,
-                                    ]),
+                                Forms\Components\Grid::make(3)
+                                    ->schema(
+                                        collect(static::getPrefixPermission())->reduce(function ($prefixs, $prefix, $prefixey) {
+                                            $prefixs[] = Forms\Components\Checkbox::make('prefix.' . $prefixey)
+                                                ->label($prefix)->afterStateUpdated(function (Closure $set, Closure $get, $state) {
+                                                    if (!$state) {
+                                                        $set('select_all', false);
+                                                    }
+
+                                                    static::refreshSelectAllStateViaEntities($set, $get);
+                                                })
+                                                ->dehydrated(fn ($state): bool => $state);
+
+                                            return $prefixs;
+                                        }, [])
+                                    ),
                             ])
                     ])->columnSpan('full')
             ]);
@@ -174,19 +190,40 @@ class PermissionResource extends Resource implements HasShieldPermissions
     protected static function getPrefixPermission()
     {
         return collect(config('filament-shield.permission_prefixes.resource'))->reduce(function ($prefixs, $prefix) {
-            $prefixs->push(Forms\Components\Grid::make()
-                ->schema([
-                    Forms\Components\Checkbox::make($prefix)
-                        ->label(Str::of($prefix)->headline())
-                        ->inline()
-                ])->columns([
-                    'sm' => 2,
-                    'lg' => 3,
-                ])
-                ->columnSpan(1));
-
+            $prefixs[$prefix] = Str::headline($prefix);
             return $prefixs;
         }, collect())->toArray();
+    }
+
+    protected static function refreshSelectAllStateViaEntities(Closure $set, Closure $get): void
+    {
+        $entitiesStates = collect(static::getPrefixPermission())
+            ->map(function ($entity, $keyentitty) use ($get) {
+                return (bool) $get('prefix.' . $keyentitty);
+            });
+
+        if ($entitiesStates->containsStrict(false) === false) {
+            $set('select_all', true);
+        }
+
+        if ($entitiesStates->containsStrict(false) === true) {
+            $set('select_all', false);
+        }
+    }
+
+    protected static function refreshEntitiesStatesViaSelectAll(Closure $set, $state): void
+    {
+        $entitiesStates = collect(config('filament-shield.permission_prefixes.resource'))->map(function ($prefix) use ($set, $state) {
+            $set('prefix.' . $prefix, $state);
+        });
+
+        if ($entitiesStates->containsStrict(false) === false) {
+            $set('select_all', true);
+        }
+
+        if ($entitiesStates->containsStrict(false) === true) {
+            $set('select_all', false);
+        }
     }
 
     public static function getPages(): array

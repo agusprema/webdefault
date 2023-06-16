@@ -118,13 +118,13 @@ class RoleResource extends Resource implements HasShieldPermissions
                             ->reactive()
                             ->schema([
                                 Forms\Components\Grid::make([
-                                    'sm' => 3,
-                                    'lg' => 4,
+                                    'sm' => 2,
+                                    'lg' => 3,
                                 ])
                                     ->schema(static::getCustomEntitiesPermisssionSchema())
                                     ->columns([
-                                        'sm' => 3,
-                                        'lg' => 4,
+                                        'sm' => 2,
+                                        'lg' => 3,
                                     ]),
                             ]),
                     ])
@@ -333,10 +333,14 @@ class RoleResource extends Resource implements HasShieldPermissions
         $entitiesStates = collect(FilamentShield::getResources())
             ->when(Utils::isPageEntityEnabled(), fn ($entities) => $entities->merge(FilamentShield::getPages()))
             ->when(Utils::isWidgetEntityEnabled(), fn ($entities) => $entities->merge(FilamentShield::getWidgets()))
-            ->when(Utils::isCustomPermissionEntityEnabled(), fn ($entities) => $entities->merge(static::getCustomEntities()))
-            ->map(function ($entity) use ($get) {
+            ->when(Utils::isCustomPermissionEntityEnabled(), fn ($entities) => $entities->merge(static::getGroupCustomeEntittiesPermissionSchema()))
+            ->map(function ($entity, $keyentitty) use ($get) {
                 if (is_array($entity)) {
-                    return (bool) $get($entity['resource']);
+                    if (array_key_exists('resource', $entity)) {
+                        return (bool) $get($entity['resource']);
+                    }
+
+                    return (bool) $get($keyentitty);
                 }
 
                 return (bool) $get($entity);
@@ -372,9 +376,13 @@ class RoleResource extends Resource implements HasShieldPermissions
             }
         });
 
-        static::getCustomEntities()->each(function ($custom) use ($set, $state) {
+        collect(static::getGroupCustomeEntittiesPermissionSchema())->each(function ($custom, $keyCustom) use ($set, $state) {
             if (Utils::isCustomPermissionEntityEnabled()) {
-                $set($custom, $state);
+                $set($keyCustom, $state);
+
+                collect($custom)->each(function ($customeEntiti) use ($set, $state) {
+                    $set($customeEntiti, $state);
+                });
             }
         });
     }
@@ -522,44 +530,125 @@ class RoleResource extends Resource implements HasShieldPermissions
         });
 
         $entitiesPermissions = $resourcePermissions
-            ->merge(FilamentShield::getPages())
-            ->merge(FilamentShield::getWidgets())
+            //->merge(FilamentShield::getPages())
+            //->merge(FilamentShield::getWidgets())
             ->values();
 
         return static::$permissionsCollection->whereNotIn('name', $entitiesPermissions)->pluck('name');
     }
 
-    protected static function getCustomEntitiesPermisssionSchema(): ?array
+    protected static function refreshCustomeEntityStateAfterUpdate(Closure $set, Closure $get, string $entity): void
+    {
+        $permissionStates = collect(static::getGroupCustomeEntittiesPermissionSchema()[$entity])
+            ->map(function ($permission) use ($get) {
+                return (bool) $get($permission);
+            });
+
+        if ($permissionStates->containsStrict(false) === false) {
+            $set($entity, true);
+        }
+
+        if ($permissionStates->containsStrict(false) === true) {
+            $set($entity, false);
+        }
+    }
+
+    protected static function getGroupCustomeEntittiesPermissionSchema(): ?array
     {
         return collect(static::getCustomEntities())->reduce(function ($customEntities, $customPermission) {
-            $customEntities[] = Forms\Components\Grid::make()
+            $utilsPrefixs = Utils::getGeneralResourcePermissionPrefixes();
+
+            foreach ($utilsPrefixs as $utilsPrefixid => $utilsPrefix) {
+                $prefixGroup = null;
+
+                if (strpos($customPermission, $utilsPrefix) !== false && strpos($customPermission, 'any') === false) {
+                    $prefixGroup = explode($utilsPrefix . '_', $customPermission)[1];
+                } elseif (strpos($utilsPrefix, 'any') !== false && strpos($customPermission, 'any') !== false && strpos($customPermission, $utilsPrefix) !== false) {
+                    $prefixGroup = explode($utilsPrefix . '_', $customPermission)[1];
+                }
+
+                if ($prefixGroup !== null) {
+                    $customEntities[$prefixGroup][] = $customPermission;
+                    $customEntities[$prefixGroup] = array_unique($customEntities[$prefixGroup]);
+                }
+            }
+
+            return $customEntities;
+        }, []);
+    }
+
+    protected static function getCustomEntitiesPermisssionSchema(): ?array
+    {
+        return collect(static::getGroupCustomeEntittiesPermissionSchema())->reduce(function ($customEntities, $customPermission, $groupCustomPermission) {
+            //$customEntities[$groupCustomPermission] = $customPermission;
+
+            $customEntities[] =
+                Forms\Components\Card::make()
+                ->extraAttributes(['class' => 'border-0 shadow-lg'])
                 ->schema([
-                    Forms\Components\Checkbox::make($customPermission)
-                        ->label(Str::of($customPermission)->headline())
-                        ->inline()
-                        ->afterStateHydrated(function (Closure $set, Closure $get, $record) use ($customPermission) {
-                            if (is_null($record)) {
-                                return;
-                            }
-
-                            $set($customPermission, $record->checkPermissionTo($customPermission));
-
-                            static::refreshSelectAllStateViaEntities($set, $get);
-                        })
+                    Forms\Components\Toggle::make($groupCustomPermission)
+                        ->onIcon('heroicon-s-lock-open')
+                        ->offIcon('heroicon-s-lock-closed')
                         ->reactive()
-                        ->afterStateUpdated(function (Closure $set, Closure $get, $state) {
+                        ->afterStateUpdated(function (Closure $set, Closure $get, $state) use ($groupCustomPermission) {
+
+                            collect(static::getGroupCustomeEntittiesPermissionSchema()[$groupCustomPermission])->each(function ($permission) use ($set, $state) {
+                                $set($permission, $state);
+                            });
+
                             if (!$state) {
                                 $set('select_all', false);
                             }
 
                             static::refreshSelectAllStateViaEntities($set, $get);
                         })
-                        ->dehydrated(fn ($state): bool => $state),
+                        ->dehydrated(false),
+                    Forms\Components\Fieldset::make('Permissions')
+                        ->label(__('filament-shield::filament-shield.column.permissions'))
+                        ->extraAttributes(['class' => 'text-primary-600', 'style' => 'border-color:var(--primary)'])
+                        ->columns([
+                            'default' => 2,
+                            'xl' => 2,
+                        ])
+                        ->schema(static::getCustomEntityPermissionsSchemaTab($customPermission, $groupCustomPermission)),
                 ])
-                ->columns(1)
                 ->columnSpan(1);
 
             return $customEntities;
+        });
+    }
+
+    protected static function getCustomEntityPermissionsSchemaTab($customPermission, $groupCustomPermission): ?array
+    {
+
+        return collect($customPermission)->reduce(function ($tablePermissions, $tablePermission) use ($groupCustomPermission) {
+            $tablePermissions[] = Forms\Components\Checkbox::make($tablePermission)
+                ->label(FilamentShield::getLocalizedResourcePermissionLabel(explode('_' . $groupCustomPermission, $tablePermission)[0]))
+                ->extraAttributes(['class' => 'text-primary-600'])
+                ->afterStateHydrated(function (Closure $set, Closure $get, $record) use ($tablePermission) {
+                    if (is_null($record)) {
+                        return;
+                    }
+
+                    $set($tablePermission, $record->checkPermissionTo($tablePermission));
+
+                    static::refreshSelectAllStateViaEntities($set, $get);
+                })
+                ->reactive()
+                ->afterStateUpdated(function (Closure $set, Closure $get, $state) use ($groupCustomPermission) {
+                    static::refreshCustomeEntityStateAfterUpdate($set, $get, $groupCustomPermission);
+
+                    if (!$state) {
+                        $set($groupCustomPermission, false);
+                        $set('select_all', false);
+                    }
+
+                    static::refreshSelectAllStateViaEntities($set, $get);
+                })
+                ->dehydrated(fn ($state): bool => $state);
+
+
+            return $tablePermissions;
         }, []);
     }
 }

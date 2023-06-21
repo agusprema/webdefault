@@ -158,6 +158,8 @@ return [
         'register' => [
             Widgets\AccountWidget::class,
             Widgets\FilamentInfoWidget::class,
+            App\Filament\Widgets\StatsUserActiveOverview::class,
+            App\Filament\Widgets\UserRegisteredChart::class
         ],
     ],
 

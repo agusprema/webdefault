@@ -1,6 +1,6 @@
 @php
     \Filament\Facades\Filament::registerRenderHook('body.end', fn(): string => \Illuminate\Support\Facades\Blade::render('@livewire(\'livewire-ui-modal\')'));
-
+    
     \Filament\Facades\Filament::registerScripts(['https://unpkg.com/@alpinejs/focus@3.x.x/dist/cdn.min.js']);
 @endphp
 

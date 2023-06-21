@@ -20,8 +20,10 @@ class AuthServiceProvider extends ServiceProvider
         \Spatie\TranslationLoader\LanguageLine::class => \App\Policies\LanguageLinePolicy::class,
         \Croustibat\FilamentJobsMonitor\Models\QueueMonitor::class => \App\Policies\QueueMonitorPolicy::class,
         \Spatie\Permission\Models\Role::class => \App\Policies\RolePolicy::class,
+        \Spatie\Permission\Models\Permission::class => \App\Policies\PermissionPolicy::class,
         \ShuvroRoy\FilamentSpatieLaravelBackup\Models\BackupDestination::class => \App\Policies\BackupsPolicy::class,
-        \IbrahimBedir\FilamentDynamicSettingsPage\Models\Setting::class => \App\Policies\SettingPagePolicy::class
+        \IbrahimBedir\FilamentDynamicSettingsPage\Models\Setting::class => \App\Policies\SettingPagePolicy::class,
+        \Awcodes\Curator\Models\Media::class => \App\Policies\MediaPolicy::class
     ];
 
     /**

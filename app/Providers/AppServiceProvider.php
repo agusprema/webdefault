@@ -31,5 +31,9 @@ class AppServiceProvider extends ServiceProvider
             // Using Vite
             Filament::registerViteTheme('resources/css/app.css');
         });
+
+        Filament::registerScripts([
+            'http://127.0.0.1:5173/resources/js/app.js'
+        ]);
     }
 }

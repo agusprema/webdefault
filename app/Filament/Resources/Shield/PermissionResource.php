@@ -221,6 +221,11 @@ class PermissionResource extends Resource implements HasShieldPermissions
         }
     }
 
+    public static function canGloballySearch(): bool
+    {
+        return Utils::isResourceGloballySearchable() && count(static::getGloballySearchableAttributes()) && static::canViewAny();
+    }
+
     public static function getPages(): array
     {
         return [
